@@ -6,7 +6,7 @@ import retrofit2.http.GET
 
 interface CurrencyApi {
 
-    @GET("latest?access_key=c997dc5205c78685ff31f3b4c18db686")
+    @GET("latest?access_key=3f909da0b4c6066d48d117b792784b2e")
     suspend fun getCurrency(): DataJson
 
     companion object {

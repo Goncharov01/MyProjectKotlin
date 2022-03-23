@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/light_grey"
     tools:context=".MainActivity">
 
     <LinearLayout
@@ -34,7 +35,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/grey"
-            app:itemTextColor="@color/white"
+            android:padding="8dp"
+            app:itemIconTint="@color/bottom_nav_color"
+            app:itemTextAppearanceActive="@style/BottomNavigationView.Active"
+            app:itemTextAppearanceInactive="@style/BottomNavigationView"
+            app:itemTextColor="@color/bottom_nav_color"
             app:menu="@menu/main_menu" />
 
     </LinearLayout>

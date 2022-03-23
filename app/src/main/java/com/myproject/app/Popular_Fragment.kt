@@ -5,9 +5,13 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.myproject.app.data.CurrencyApi
+import com.myproject.app.databinding.FragmentPopularBinding
+import com.myproject.app.recycler.MyAdapterRecycler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
 private const val ARG_PARAM1 = "param1"
@@ -17,6 +21,10 @@ class Popular_Fragment : Fragment() {
 
     private var param1: String? = null
     private var param2: String? = null
+
+    private var job: Job = Job()
+    private var _binding: FragmentPopularBinding? = null
+    private val binding get() = _binding!!
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,14 +38,20 @@ class Popular_Fragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        _binding = FragmentPopularBinding.inflate(inflater, container, false)
 
-        return inflater.inflate(R.layout.fragment_popular, container, false)
+
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        GlobalScope.launch(Dispatchers.IO) {
+        val myAdapterRecycler: MyAdapterRecycler = MyAdapterRecycler()
+        binding.listPopular.adapter = myAdapterRecycler
+        binding.listPopular.layoutManager = LinearLayoutManager(context)
+
+        job = GlobalScope.launch(Dispatchers.IO) {
 
             println("!!!!!!!!" + CurrencyApi.getApi().getCurrency())
 

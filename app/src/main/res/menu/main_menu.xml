@@ -3,12 +3,12 @@
 
     <item
         android:id="@+id/popular_fragment"
-        android:icon="@drawable/ic_launcher_background"
-        android:title="Fragment popular" />
+        android:title="Popular"
+        android:icon="@drawable/ic_baseline_attach_money_24"/>
 
     <item
         android:id="@+id/favorite_fragment"
-        android:icon="@drawable/ic_launcher_background"
-        android:title="Fragment favorite" />
+        android:title="Favorite"
+        android:icon="@drawable/ic_baseline_star_24"/>
 
 </menu>
