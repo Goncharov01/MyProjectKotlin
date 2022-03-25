@@ -8,7 +8,10 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.myproject.app.data.CurrencyApi
 import com.myproject.app.databinding.FragmentPopularBinding
+import com.myproject.app.recycler.DataCurrency
 import com.myproject.app.recycler.MyAdapterRecycler
+import com.myproject.app.room.DataBaseBuilder
+import com.myproject.app.room.DataBaseDataCurrency
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
@@ -25,6 +28,7 @@ class Popular_Fragment : Fragment() {
     private var job: Job = Job()
     private var _binding: FragmentPopularBinding? = null
     private val binding get() = _binding!!
+    private val listCurrency = mutableListOf<DataCurrency>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,9 +55,24 @@ class Popular_Fragment : Fragment() {
         binding.listPopular.adapter = myAdapterRecycler
         binding.listPopular.layoutManager = LinearLayoutManager(context)
 
-        job = GlobalScope.launch(Dispatchers.IO) {
+        //Bug
+//        val dataBaseDataCurrency: DataBaseDataCurrency =
+//            DataBaseBuilder.getInstans(requireContext())
 
-            println("!!!!!!!!" + CurrencyApi.getApi().getCurrency())
+//        GlobalScope.launch {
+//            dataBaseDataCurrency.dataCurrencyDao()
+//                .insertCurrency(DataCurrency(currency = "qwerty", value = "qwerty"))
+//        }
+
+        job = GlobalScope.launch(Dispatchers.Main) {
+
+            val currencyRates = CurrencyApi.getApi().getCurrency().rates
+
+            for (entry in currencyRates) {
+                listCurrency.add(DataCurrency(currency = entry.key, value = entry.value.toString()))
+            }
+
+            myAdapterRecycler.addList(listCurrency)
 
         }
 
