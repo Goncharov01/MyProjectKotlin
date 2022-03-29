@@ -4,8 +4,11 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.myproject.app.databinding.SingleItemBinding
+import com.myproject.app.room.DataCurrencyDao
+import kotlinx.coroutines.*
 
-class MyAdapterRecycler() : RecyclerView.Adapter<DataCurrencyViewHolder>() {
+class MyAdapterRecycler(var dataCurrencyDao: DataCurrencyDao) :
+    RecyclerView.Adapter<DataCurrencyViewHolder>() {
 
     var listCurrency = mutableListOf<DataCurrency>()
 
@@ -20,6 +23,32 @@ class MyAdapterRecycler() : RecyclerView.Adapter<DataCurrencyViewHolder>() {
         val dataCurrency = listCurrency[position]
         holder.binding.textCurrency.text = dataCurrency.currency
         holder.binding.textValue.text = dataCurrency.value
+
+        holder.binding.myLinerLayout.setOnClickListener {
+
+            if (dataCurrency.id == 0 && dataCurrency.favorite == false) {
+
+                GlobalScope.launch(Dispatchers.Main) {
+                    dataCurrencyDao.insertCurrency(dataCurrency)
+                }
+
+            } else {
+
+                GlobalScope.launch(Dispatchers.Main) {
+                    dataCurrencyDao.deleteCurrency(dataCurrency.id)
+                    listCurrency.remove(dataCurrency)
+                    dataCurrency.favorite = false
+                    notifyItemRemoved(position)
+                    notifyItemRangeChanged(position, itemCount)
+                }
+
+            }
+
+            notifyDataSetChanged()
+            notifyItemChanged(position)
+
+        }
+
     }
 
     override fun getItemCount(): Int {
@@ -36,4 +65,4 @@ class MyAdapterRecycler() : RecyclerView.Adapter<DataCurrencyViewHolder>() {
 }
 
 class DataCurrencyViewHolder(var binding: SingleItemBinding) :
-    RecyclerView.ViewHolder(binding.root) {}
+    RecyclerView.ViewHolder(binding.root)

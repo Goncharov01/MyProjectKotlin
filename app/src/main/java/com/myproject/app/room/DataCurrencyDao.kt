@@ -10,9 +10,12 @@ import com.myproject.app.recycler.DataCurrency
 interface DataCurrencyDao {
 
     @Insert()
-    suspend fun insertCurrency(listCurrency: DataCurrency): Int
+    suspend fun insertCurrency(listCurrency: DataCurrency): Long
+
+    @Query("select * from DataCurrency")
+    suspend fun selectAll(): List<DataCurrency>
 
     @Query("delete from DataCurrency where id = :id")
-    suspend fun deleteCurrency(id: Int)
+    suspend fun deleteCurrency(id: Int): Int
 
 }

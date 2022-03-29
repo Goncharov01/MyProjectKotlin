@@ -25,10 +25,11 @@ class Popular_Fragment : Fragment() {
     private var param1: String? = null
     private var param2: String? = null
 
-    private var job: Job = Job()
     private var _binding: FragmentPopularBinding? = null
     private val binding get() = _binding!!
+
     private val listCurrency = mutableListOf<DataCurrency>()
+    private var job: Job = Job()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,18 +52,14 @@ class Popular_Fragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val myAdapterRecycler: MyAdapterRecycler = MyAdapterRecycler()
+        val dataBaseDataCurrency: DataBaseDataCurrency =
+            DataBaseBuilder.getInstans(requireContext())
+
+        val myAdapterRecycler: MyAdapterRecycler =
+            MyAdapterRecycler(dataBaseDataCurrency.dataCurrencyDao())
+
         binding.listPopular.adapter = myAdapterRecycler
         binding.listPopular.layoutManager = LinearLayoutManager(context)
-
-        //Bug
-//        val dataBaseDataCurrency: DataBaseDataCurrency =
-//            DataBaseBuilder.getInstans(requireContext())
-
-//        GlobalScope.launch {
-//            dataBaseDataCurrency.dataCurrencyDao()
-//                .insertCurrency(DataCurrency(currency = "qwerty", value = "qwerty"))
-//        }
 
         job = GlobalScope.launch(Dispatchers.Main) {
 
@@ -73,7 +70,6 @@ class Popular_Fragment : Fragment() {
             }
 
             myAdapterRecycler.addList(listCurrency)
-
         }
 
     }

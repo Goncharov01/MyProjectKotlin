@@ -8,10 +8,9 @@ import com.myproject.app.recycler.DataCurrency
 import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.internal.synchronized
 
-@Database(entities = [DataCurrency::class], version = 1)
+@Database(entities = [DataCurrency::class], version = 2)
 abstract class DataBaseDataCurrency : RoomDatabase() {
     abstract fun dataCurrencyDao(): DataCurrencyDao
-
 }
 
 object DataBaseBuilder {
