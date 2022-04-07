@@ -1,17 +1,17 @@
 package com.myproject.app
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.myproject.app.data.CurrencyApi
 import com.myproject.app.databinding.FragmentPopularBinding
-import com.myproject.app.recycler.DataCurrency
-import com.myproject.app.recycler.MyAdapterRecycler
+import com.myproject.app.recycler.MyAdapterRecyclerPopular
 import com.myproject.app.room.DataBaseBuilder
 import com.myproject.app.room.DataBaseDataCurrency
+import com.myproject.app.room.DataCurrency
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
@@ -20,7 +20,7 @@ import kotlinx.coroutines.launch
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
 
-class Popular_Fragment : Fragment() {
+class PopularFragment : Fragment() {
 
     private var param1: String? = null
     private var param2: String? = null
@@ -29,7 +29,7 @@ class Popular_Fragment : Fragment() {
     private val binding get() = _binding!!
 
     private val listCurrency = mutableListOf<DataCurrency>()
-    private var job: Job = Job()
+    private var jobPopular: Job = Job()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,13 +55,13 @@ class Popular_Fragment : Fragment() {
         val dataBaseDataCurrency: DataBaseDataCurrency =
             DataBaseBuilder.getInstans(requireContext())
 
-        val myAdapterRecycler: MyAdapterRecycler =
-            MyAdapterRecycler(dataBaseDataCurrency.dataCurrencyDao())
+        val myAdapterRecycler: MyAdapterRecyclerPopular =
+            MyAdapterRecyclerPopular(dataBaseDataCurrency.dataCurrencyDao())
 
         binding.listPopular.adapter = myAdapterRecycler
         binding.listPopular.layoutManager = LinearLayoutManager(context)
 
-        job = GlobalScope.launch(Dispatchers.Main) {
+        jobPopular = GlobalScope.launch(Dispatchers.Main) {
 
             val currencyRates = CurrencyApi.getApi().getCurrency().rates
 
@@ -74,11 +74,16 @@ class Popular_Fragment : Fragment() {
 
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        jobPopular.cancel()
+    }
+
     companion object {
 
         @JvmStatic
         fun newInstance(param1: String, param2: String) =
-            Popular_Fragment().apply {
+            PopularFragment().apply {
                 arguments = Bundle().apply {
                     putString(ARG_PARAM1, param1)
                     putString(ARG_PARAM2, param2)

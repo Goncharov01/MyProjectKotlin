@@ -20,7 +20,7 @@
             android:layout_weight="1"
             android:fontFamily="@font/baloo"
             android:text="USD"
-            android:textSize="42sp" />
+            android:textSize="34sp" />
 
         <TextView
             android:id="@+id/text_value"
@@ -29,10 +29,10 @@
             android:layout_weight="3"
             android:fontFamily="@font/baloo"
             android:text="3.0"
-            android:textSize="42sp" />
+            android:textSize="34sp" />
 
         <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/favorite"
+            android:id="@+id/icon_favorite"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"

@@ -7,7 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.myproject.app.databinding.FragmentFavoriteBinding
-import com.myproject.app.recycler.MyAdapterRecycler
+import com.myproject.app.recycler.MyAdapterRecyclerFavorite
 import com.myproject.app.room.DataBaseBuilder
 import com.myproject.app.room.DataBaseDataCurrency
 import kotlinx.coroutines.Dispatchers
@@ -26,7 +26,7 @@ class FavoriteFragment : Fragment() {
     private var _binding: FragmentFavoriteBinding? = null
     private val binding get() = _binding!!
 
-    private var job: Job = Job()
+    private lateinit var jobFavorite: Job
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,20 +52,27 @@ class FavoriteFragment : Fragment() {
         val dataBaseDataCurrency: DataBaseDataCurrency =
             DataBaseBuilder.getInstans(requireContext())
 
-        val myAdapterRecycler: MyAdapterRecycler =
-            MyAdapterRecycler(dataBaseDataCurrency.dataCurrencyDao())
+        val myAdapterRecycler: MyAdapterRecyclerFavorite =
+            MyAdapterRecyclerFavorite(dataBaseDataCurrency.dataCurrencyDao())
 
         binding.listFavorite.adapter = myAdapterRecycler
         binding.listFavorite.layoutManager = LinearLayoutManager(context)
 
-        job = GlobalScope.launch(Dispatchers.Main) {
+        jobFavorite = GlobalScope.launch(Dispatchers.Main) {
 
             val listData =
                 DataBaseBuilder.getInstans(requireContext()).dataCurrencyDao().selectAll()
+            myAdapterRecycler.addList(listData)
 
             myAdapterRecycler.addList(listData)
+
         }
 
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        jobFavorite.cancel()
     }
 
     companion object {

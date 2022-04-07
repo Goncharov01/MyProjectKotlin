@@ -1,4 +1,4 @@
-package com.myproject.app.recycler
+package com.myproject.app.room
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
@@ -9,7 +9,7 @@ data class DataCurrency(
     @PrimaryKey(autoGenerate = true)
     var id: Int = 0,
 
-    var favorite : Boolean = false,
+    var favorite: Boolean = false,
 
     var currency: String,
 

@@ -3,11 +3,13 @@ package com.myproject.app.recycler
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.myproject.app.R
 import com.myproject.app.databinding.SingleItemBinding
+import com.myproject.app.room.DataCurrency
 import com.myproject.app.room.DataCurrencyDao
 import kotlinx.coroutines.*
 
-class MyAdapterRecycler(var dataCurrencyDao: DataCurrencyDao) :
+class MyAdapterRecyclerPopular(var dataCurrencyDao: DataCurrencyDao) :
     RecyclerView.Adapter<DataCurrencyViewHolder>() {
 
     var listCurrency = mutableListOf<DataCurrency>()
@@ -24,28 +26,16 @@ class MyAdapterRecycler(var dataCurrencyDao: DataCurrencyDao) :
         holder.binding.textCurrency.text = dataCurrency.currency
         holder.binding.textValue.text = dataCurrency.value
 
-        holder.binding.myLinerLayout.setOnClickListener {
+        holder.binding.iconFavorite.setOnClickListener {
 
-            if (dataCurrency.id == 0 && dataCurrency.favorite == false) {
+            if (dataCurrency.id == 0) {
 
                 GlobalScope.launch(Dispatchers.Main) {
+                    holder.binding.iconFavorite.setImageResource(R.drawable.favorite_icon)
                     dataCurrencyDao.insertCurrency(dataCurrency)
                 }
 
-            } else {
-
-                GlobalScope.launch(Dispatchers.Main) {
-                    dataCurrencyDao.deleteCurrency(dataCurrency.id)
-                    listCurrency.remove(dataCurrency)
-                    dataCurrency.favorite = false
-                    notifyItemRemoved(position)
-                    notifyItemRangeChanged(position, itemCount)
-                }
-
             }
-
-            notifyDataSetChanged()
-            notifyItemChanged(position)
 
         }
 
