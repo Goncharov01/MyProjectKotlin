@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.myproject.app.R
 import com.myproject.app.databinding.SingleItemBinding
 import com.myproject.app.room.DataCurrency
 import com.myproject.app.room.DataCurrencyDao
@@ -26,6 +27,7 @@ class MyAdapterRecyclerFavorite(var dataCurrencyDao: DataCurrencyDao) :
         val dataCurrency = listCurrency[position]
         holder.binding.textValue.text = dataCurrency.value
         holder.binding.textCurrency.text = dataCurrency.currency
+        holder.binding.iconFavorite.setImageResource(R.drawable.favorite_icon)
 
         holder.binding.iconFavorite.setOnClickListener {
 
@@ -52,7 +54,6 @@ class MyAdapterRecyclerFavorite(var dataCurrencyDao: DataCurrencyDao) :
         this.listCurrency.addAll(listCurrency)
         notifyDataSetChanged()
     }
-
 
 }
 

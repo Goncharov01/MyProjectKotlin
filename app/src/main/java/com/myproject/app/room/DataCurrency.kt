@@ -1,9 +1,12 @@
 package com.myproject.app.room
 
 import androidx.room.Entity
+import androidx.room.Index
 import androidx.room.PrimaryKey
 
-@Entity
+@Entity(
+    indices = [Index(value = ["currency"], unique = true)]
+)
 data class DataCurrency(
 
     @PrimaryKey(autoGenerate = true)

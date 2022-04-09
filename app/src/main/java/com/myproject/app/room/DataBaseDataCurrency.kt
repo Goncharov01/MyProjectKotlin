@@ -7,7 +7,7 @@ import androidx.room.RoomDatabase
 import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.internal.synchronized
 
-@Database(entities = [DataCurrency::class], version = 2)
+@Database(entities = [DataCurrency::class], version = 4)
 abstract class DataBaseDataCurrency : RoomDatabase() {
     abstract fun dataCurrencyDao(): DataCurrencyDao
 }

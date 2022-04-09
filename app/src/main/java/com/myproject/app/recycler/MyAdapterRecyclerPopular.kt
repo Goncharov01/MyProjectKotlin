@@ -31,8 +31,17 @@ class MyAdapterRecyclerPopular(var dataCurrencyDao: DataCurrencyDao) :
             if (dataCurrency.id == 0) {
 
                 GlobalScope.launch(Dispatchers.Main) {
-                    holder.binding.iconFavorite.setImageResource(R.drawable.favorite_icon)
-                    dataCurrencyDao.insertCurrency(dataCurrency)
+                    if (holder.binding.iconFavorite.drawable.constantState
+                        != holder.binding.root.resources.getDrawable(R.drawable.favorite_icon).constantState
+                    ) {
+                        holder.binding.iconFavorite.setImageResource(R.drawable.favorite_icon)
+                        dataCurrencyDao.insertCurrency(dataCurrency)
+
+                    } else {
+                        holder.binding.iconFavorite.setImageResource(R.drawable.unfavorite_icon)
+                        dataCurrencyDao.deleteCurrencyByCurrency(dataCurrency.currency)
+                    }
+
                 }
 
             }
@@ -41,15 +50,14 @@ class MyAdapterRecyclerPopular(var dataCurrencyDao: DataCurrencyDao) :
 
     }
 
-    override fun getItemCount(): Int {
-        return listCurrency.size
-    }
-
-
     fun addList(listCurrency: List<DataCurrency>) {
         this.listCurrency.clear()
         this.listCurrency.addAll(listCurrency)
         notifyDataSetChanged()
+    }
+
+    override fun getItemCount(): Int {
+        return listCurrency.size
     }
 
 }
