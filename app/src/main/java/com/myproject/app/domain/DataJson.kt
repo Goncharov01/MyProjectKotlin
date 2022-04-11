@@ -1,4 +1,4 @@
-package com.myproject.app.data
+package com.myproject.app.domain
 
 data class DataJson(
     val success: Boolean,

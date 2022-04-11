@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/popular_fragment"
-        android:name="com.myproject.app.PopularFragment"
+        android:name="com.myproject.app.presentation.PopularFragment"
         android:label="fragment_popular"
         tools:layout="@layout/fragment_popular">
         <action
@@ -17,7 +17,7 @@
 
     <fragment
         android:id="@+id/favorite_fragment"
-        android:name="com.myproject.app.FavoriteFragment"
+        android:name="com.myproject.app.presentation.FavoriteFragment"
         android:label="fragment_favorite"
         tools:layout="@layout/fragment_favorite" />
 

@@ -1,5 +1,6 @@
-package com.myproject.app.data
+package com.myproject.app.data.network
 
+import com.myproject.app.domain.DataJson
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
@@ -11,7 +12,7 @@ interface CurrencyApi {
 
     companion object {
 
-        private val baseUrl: String = "http://data.fixer.io/api/"
+        private const val baseUrl: String = "http://data.fixer.io/api/"
 
         fun getApi(): CurrencyApi = Retrofit.Builder()
             .baseUrl(baseUrl)

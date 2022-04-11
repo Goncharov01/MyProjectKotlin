@@ -1,4 +1,4 @@
-package com.myproject.app
+package com.myproject.app.presentation
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -6,10 +6,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.myproject.app.data.DataJsonRepository
 import com.myproject.app.databinding.FragmentFavoriteBinding
-import com.myproject.app.recycler.MyAdapterRecyclerFavorite
-import com.myproject.app.room.DataBaseBuilder
-import com.myproject.app.room.DataBaseDataCurrency
+import com.myproject.app.presentation.adapter.MyAdapterRecyclerFavorite
+import com.myproject.app.data.db.DataBaseBuilder
+import com.myproject.app.data.db.DataBaseDataCurrency
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
@@ -27,6 +28,7 @@ class FavoriteFragment : Fragment() {
     private val binding get() = _binding!!
 
     private lateinit var jobFavorite: Job
+    private lateinit var dataJsonRepository: DataJsonRepository
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,19 +51,18 @@ class FavoriteFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val dataBaseDataCurrency: DataBaseDataCurrency =
-            DataBaseBuilder.getInstans(requireContext())
-
         val myAdapterRecycler: MyAdapterRecyclerFavorite =
-            MyAdapterRecyclerFavorite(dataBaseDataCurrency.dataCurrencyDao())
+            MyAdapterRecyclerFavorite(requireContext())
+
+        dataJsonRepository = DataJsonRepository(requireContext())
 
         binding.listFavorite.adapter = myAdapterRecycler
         binding.listFavorite.layoutManager = LinearLayoutManager(context)
 
         jobFavorite = GlobalScope.launch(Dispatchers.Main) {
 
-            val listData =
-                DataBaseBuilder.getInstans(requireContext()).dataCurrencyDao().selectAll()
+            val listData = dataJsonRepository.selectAll()
+
             myAdapterRecycler.addList(listData)
 
             myAdapterRecycler.addList(listData)

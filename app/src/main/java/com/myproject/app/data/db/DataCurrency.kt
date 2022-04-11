@@ -1,4 +1,4 @@
-package com.myproject.app.room
+package com.myproject.app.data.db
 
 import androidx.room.Entity
 import androidx.room.Index

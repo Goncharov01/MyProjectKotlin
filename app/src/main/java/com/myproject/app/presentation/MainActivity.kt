@@ -1,9 +1,10 @@
-package com.myproject.app
+package com.myproject.app.presentation
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.navigation.findNavController
 import androidx.navigation.ui.NavigationUI
+import com.myproject.app.R
 import com.myproject.app.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {

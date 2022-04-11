@@ -1,21 +1,23 @@
-package com.myproject.app.recycler
+package com.myproject.app.presentation.adapter
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.myproject.app.R
+import com.myproject.app.data.DataJsonRepository
 import com.myproject.app.databinding.SingleItemBinding
-import com.myproject.app.room.DataCurrency
-import com.myproject.app.room.DataCurrencyDao
+import com.myproject.app.data.db.DataCurrency
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
-class MyAdapterRecyclerFavorite(var dataCurrencyDao: DataCurrencyDao) :
+class MyAdapterRecyclerFavorite(var context: Context) :
     RecyclerView.Adapter<MyViewHolderFavorite>() {
 
-    var listCurrency = mutableListOf<DataCurrency>()
+    private var listCurrency = mutableListOf<DataCurrency>()
+    private var dataJsonRepository: DataJsonRepository = DataJsonRepository(context)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolderFavorite {
         val binding: SingleItemBinding =
@@ -32,7 +34,7 @@ class MyAdapterRecyclerFavorite(var dataCurrencyDao: DataCurrencyDao) :
         holder.binding.iconFavorite.setOnClickListener {
 
             GlobalScope.launch(Dispatchers.Main) {
-                dataCurrencyDao.deleteCurrency(dataCurrency.id)
+                dataJsonRepository.deleteCurrency(dataCurrency.id)
                 listCurrency.remove(dataCurrency)
                 notifyItemRemoved(position)
                 notifyItemRangeChanged(position, itemCount)

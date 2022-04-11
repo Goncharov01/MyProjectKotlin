@@ -1,18 +1,20 @@
-package com.myproject.app.recycler
+package com.myproject.app.presentation.adapter
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.myproject.app.R
+import com.myproject.app.data.DataJsonRepository
 import com.myproject.app.databinding.SingleItemBinding
-import com.myproject.app.room.DataCurrency
-import com.myproject.app.room.DataCurrencyDao
+import com.myproject.app.data.db.DataCurrency
 import kotlinx.coroutines.*
 
-class MyAdapterRecyclerPopular(var dataCurrencyDao: DataCurrencyDao) :
+class MyAdapterRecyclerPopular(var context: Context) :
     RecyclerView.Adapter<DataCurrencyViewHolder>() {
 
-    var listCurrency = mutableListOf<DataCurrency>()
+    private var listCurrency = mutableListOf<DataCurrency>()
+    private var dataJsonRepository: DataJsonRepository = DataJsonRepository(context)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DataCurrencyViewHolder {
         val binding: SingleItemBinding =
@@ -35,11 +37,11 @@ class MyAdapterRecyclerPopular(var dataCurrencyDao: DataCurrencyDao) :
                         != holder.binding.root.resources.getDrawable(R.drawable.favorite_icon).constantState
                     ) {
                         holder.binding.iconFavorite.setImageResource(R.drawable.favorite_icon)
-                        dataCurrencyDao.insertCurrency(dataCurrency)
+                        dataJsonRepository.insertCurrency(dataCurrency)
 
                     } else {
                         holder.binding.iconFavorite.setImageResource(R.drawable.unfavorite_icon)
-                        dataCurrencyDao.deleteCurrencyByCurrency(dataCurrency.currency)
+                        dataJsonRepository.deleteCurrencyByCurrency(dataCurrency.currency)
                     }
 
                 }
