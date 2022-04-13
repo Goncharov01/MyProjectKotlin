@@ -9,6 +9,8 @@ import com.myproject.app.R
 import com.myproject.app.data.DataJsonRepository
 import com.myproject.app.databinding.SingleItemBinding
 import com.myproject.app.data.db.DataCurrency
+import com.myproject.app.domain.usecase.deleteCurrency.DeleteCurrencyUseCase
+import com.myproject.app.domain.usecase.deleteCurrency.DeleteCurrencyUseCaseImpl
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -17,7 +19,9 @@ class MyAdapterRecyclerFavorite(var context: Context) :
     RecyclerView.Adapter<MyViewHolderFavorite>() {
 
     private var listCurrency = mutableListOf<DataCurrency>()
-    private var dataJsonRepository: DataJsonRepository = DataJsonRepository(context)
+    private val dataJsonRepository: DataJsonRepository = DataJsonRepository(context)
+    private val deleteCurrencyUseCase: DeleteCurrencyUseCase =
+        DeleteCurrencyUseCaseImpl(dataJsonRepository)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolderFavorite {
         val binding: SingleItemBinding =
@@ -34,7 +38,7 @@ class MyAdapterRecyclerFavorite(var context: Context) :
         holder.binding.iconFavorite.setOnClickListener {
 
             GlobalScope.launch(Dispatchers.Main) {
-                dataJsonRepository.deleteCurrency(dataCurrency.id)
+                deleteCurrencyUseCase.deleteCurrency(dataCurrency.id)
                 listCurrency.remove(dataCurrency)
                 notifyItemRemoved(position)
                 notifyItemRangeChanged(position, itemCount)

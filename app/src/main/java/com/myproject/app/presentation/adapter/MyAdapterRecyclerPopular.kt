@@ -8,13 +8,23 @@ import com.myproject.app.R
 import com.myproject.app.data.DataJsonRepository
 import com.myproject.app.databinding.SingleItemBinding
 import com.myproject.app.data.db.DataCurrency
+import com.myproject.app.domain.usecase.deleteCurrency.DeleteCurrencyUseCase
+import com.myproject.app.domain.usecase.deleteCurrency.DeleteCurrencyUseCaseImpl
+import com.myproject.app.domain.usecase.deletecurrencybycurrency.DeleteCurrencyByCurrencyUseCase
+import com.myproject.app.domain.usecase.deletecurrencybycurrency.DeleteCurrencyByCurrencyUseCaseImpl
+import com.myproject.app.domain.usecase.insertcurrency.InsertCurrencyUseCase
+import com.myproject.app.domain.usecase.insertcurrency.InsertCurrencyUseCaseImpl
 import kotlinx.coroutines.*
 
 class MyAdapterRecyclerPopular(var context: Context) :
     RecyclerView.Adapter<DataCurrencyViewHolder>() {
 
     private var listCurrency = mutableListOf<DataCurrency>()
-    private var dataJsonRepository: DataJsonRepository = DataJsonRepository(context)
+    private val dataJsonRepository: DataJsonRepository = DataJsonRepository(context)
+    private val insertCurrencyUseCase: InsertCurrencyUseCase =
+        InsertCurrencyUseCaseImpl(dataJsonRepository)
+    private val deleteCurrencyByCurrencyUseCase: DeleteCurrencyByCurrencyUseCase =
+        DeleteCurrencyByCurrencyUseCaseImpl(dataJsonRepository)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DataCurrencyViewHolder {
         val binding: SingleItemBinding =
@@ -37,11 +47,11 @@ class MyAdapterRecyclerPopular(var context: Context) :
                         != holder.binding.root.resources.getDrawable(R.drawable.favorite_icon).constantState
                     ) {
                         holder.binding.iconFavorite.setImageResource(R.drawable.favorite_icon)
-                        dataJsonRepository.insertCurrency(dataCurrency)
+                        insertCurrencyUseCase.insertCurrency(dataCurrency)
 
                     } else {
                         holder.binding.iconFavorite.setImageResource(R.drawable.unfavorite_icon)
-                        dataJsonRepository.deleteCurrencyByCurrency(dataCurrency.currency)
+                        deleteCurrencyByCurrencyUseCase.deleteCurrencyByCurrency(dataCurrency.currency)
                     }
 
                 }

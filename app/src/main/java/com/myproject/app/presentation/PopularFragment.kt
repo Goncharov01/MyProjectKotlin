@@ -7,12 +7,11 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.myproject.app.data.DataJsonRepository
-import com.myproject.app.data.network.CurrencyApi
 import com.myproject.app.databinding.FragmentPopularBinding
 import com.myproject.app.presentation.adapter.MyAdapterRecyclerPopular
-import com.myproject.app.data.db.DataBaseBuilder
-import com.myproject.app.data.db.DataBaseDataCurrency
 import com.myproject.app.data.db.DataCurrency
+import com.myproject.app.domain.usecase.getcurrency.GetCurrencyUseCase
+import com.myproject.app.domain.usecase.getcurrency.GetCurrencyUseCaseImpl
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
@@ -33,6 +32,7 @@ class PopularFragment : Fragment() {
     private var jobPopular: Job = Job()
 
     private lateinit var dataJsonRepository: DataJsonRepository
+    private lateinit var getCurrencyUseCase: GetCurrencyUseCase
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,13 +59,14 @@ class PopularFragment : Fragment() {
             MyAdapterRecyclerPopular(requireContext())
 
         dataJsonRepository = DataJsonRepository(requireContext())
+        getCurrencyUseCase = GetCurrencyUseCaseImpl(dataJsonRepository)
 
         binding.listPopular.adapter = myAdapterRecycler
         binding.listPopular.layoutManager = LinearLayoutManager(context)
 
         jobPopular = GlobalScope.launch(Dispatchers.Main) {
 
-            val currencyRates = dataJsonRepository.getCurrency().rates
+            val currencyRates = getCurrencyUseCase.getCurrency().rates
 
             for (entry in currencyRates) {
                 listCurrency.add(DataCurrency(currency = entry.key, value = entry.value.toString()))

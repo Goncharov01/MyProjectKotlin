@@ -8,9 +8,9 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.myproject.app.data.DataJsonRepository
 import com.myproject.app.databinding.FragmentFavoriteBinding
+import com.myproject.app.domain.usecase.selectallcurrency.SelectAllCurrencyUseCase
+import com.myproject.app.domain.usecase.selectallcurrency.SelectAllCurrencyUseCaseImpl
 import com.myproject.app.presentation.adapter.MyAdapterRecyclerFavorite
-import com.myproject.app.data.db.DataBaseBuilder
-import com.myproject.app.data.db.DataBaseDataCurrency
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
@@ -29,6 +29,7 @@ class FavoriteFragment : Fragment() {
 
     private lateinit var jobFavorite: Job
     private lateinit var dataJsonRepository: DataJsonRepository
+    private lateinit var selectAllCurrencyUseCase: SelectAllCurrencyUseCase
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,13 +56,14 @@ class FavoriteFragment : Fragment() {
             MyAdapterRecyclerFavorite(requireContext())
 
         dataJsonRepository = DataJsonRepository(requireContext())
+        selectAllCurrencyUseCase = SelectAllCurrencyUseCaseImpl(dataJsonRepository)
 
         binding.listFavorite.adapter = myAdapterRecycler
         binding.listFavorite.layoutManager = LinearLayoutManager(context)
 
         jobFavorite = GlobalScope.launch(Dispatchers.Main) {
 
-            val listData = dataJsonRepository.selectAll()
+            val listData = selectAllCurrencyUseCase.selectAll()
 
             myAdapterRecycler.addList(listData)
 
