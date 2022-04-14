@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.myproject.app.data.DataJsonRepository
 import com.myproject.app.databinding.FragmentPopularBinding
@@ -12,9 +13,6 @@ import com.myproject.app.presentation.adapter.MyAdapterRecyclerPopular
 import com.myproject.app.data.db.DataCurrency
 import com.myproject.app.domain.usecase.getcurrency.GetCurrencyUseCase
 import com.myproject.app.domain.usecase.getcurrency.GetCurrencyUseCaseImpl
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
 private const val ARG_PARAM1 = "param1"
@@ -29,10 +27,10 @@ class PopularFragment : Fragment() {
     private val binding get() = _binding!!
 
     private val listCurrency = mutableListOf<DataCurrency>()
-    private var jobPopular: Job = Job()
 
     private lateinit var dataJsonRepository: DataJsonRepository
     private lateinit var getCurrencyUseCase: GetCurrencyUseCase
+    private lateinit var myAdapterRecycler: MyAdapterRecyclerPopular
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,8 +53,7 @@ class PopularFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val myAdapterRecycler: MyAdapterRecyclerPopular =
-            MyAdapterRecyclerPopular(requireContext())
+        myAdapterRecycler = MyAdapterRecyclerPopular(requireContext())
 
         dataJsonRepository = DataJsonRepository(requireContext())
         getCurrencyUseCase = GetCurrencyUseCaseImpl(dataJsonRepository)
@@ -64,7 +61,7 @@ class PopularFragment : Fragment() {
         binding.listPopular.adapter = myAdapterRecycler
         binding.listPopular.layoutManager = LinearLayoutManager(context)
 
-        jobPopular = GlobalScope.launch(Dispatchers.Main) {
+        viewLifecycleOwner.lifecycleScope.launch {
 
             val currencyRates = getCurrencyUseCase.getCurrency().rates
 
@@ -73,13 +70,9 @@ class PopularFragment : Fragment() {
             }
 
             myAdapterRecycler.addList(listCurrency)
+
         }
 
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        jobPopular.cancel()
     }
 
     companion object {

@@ -1,19 +1,17 @@
 package com.myproject.app.presentation
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.myproject.app.data.DataJsonRepository
 import com.myproject.app.databinding.FragmentFavoriteBinding
 import com.myproject.app.domain.usecase.selectallcurrency.SelectAllCurrencyUseCase
 import com.myproject.app.domain.usecase.selectallcurrency.SelectAllCurrencyUseCaseImpl
 import com.myproject.app.presentation.adapter.MyAdapterRecyclerFavorite
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
 private const val ARG_PARAM1 = "param1"
@@ -27,9 +25,9 @@ class FavoriteFragment : Fragment() {
     private var _binding: FragmentFavoriteBinding? = null
     private val binding get() = _binding!!
 
-    private lateinit var jobFavorite: Job
     private lateinit var dataJsonRepository: DataJsonRepository
     private lateinit var selectAllCurrencyUseCase: SelectAllCurrencyUseCase
+    private lateinit var myAdapterRecycler: MyAdapterRecyclerFavorite
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,8 +50,7 @@ class FavoriteFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val myAdapterRecycler: MyAdapterRecyclerFavorite =
-            MyAdapterRecyclerFavorite(requireContext())
+        myAdapterRecycler = MyAdapterRecyclerFavorite(requireContext())
 
         dataJsonRepository = DataJsonRepository(requireContext())
         selectAllCurrencyUseCase = SelectAllCurrencyUseCaseImpl(dataJsonRepository)
@@ -61,21 +58,13 @@ class FavoriteFragment : Fragment() {
         binding.listFavorite.adapter = myAdapterRecycler
         binding.listFavorite.layoutManager = LinearLayoutManager(context)
 
-        jobFavorite = GlobalScope.launch(Dispatchers.Main) {
+        viewLifecycleOwner.lifecycleScope.launch {
 
             val listData = selectAllCurrencyUseCase.selectAll()
-
-            myAdapterRecycler.addList(listData)
-
             myAdapterRecycler.addList(listData)
 
         }
 
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        jobFavorite.cancel()
     }
 
     companion object {
