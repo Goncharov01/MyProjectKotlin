@@ -1,37 +1,36 @@
-package com.myproject.app.presentation
+package com.myproject.app.presentation.popular
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.myproject.app.data.DataJsonRepository
-import com.myproject.app.databinding.FragmentFavoriteBinding
-import com.myproject.app.domain.usecase.selectallcurrency.SelectAllCurrencyUseCase
-import com.myproject.app.domain.usecase.selectallcurrency.SelectAllCurrencyUseCaseImpl
-import com.myproject.app.presentation.adapter.MyAdapterRecyclerFavorite
+import com.myproject.app.databinding.FragmentPopularBinding
+import com.myproject.app.presentation.adapter.MyAdapterRecyclerPopular
+import com.myproject.app.presentation.adapter.MyViewModelFactory
 import kotlinx.coroutines.launch
 
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
 
-class FavoriteFragment : Fragment() {
+class PopularFragment : Fragment() {
 
     private var param1: String? = null
     private var param2: String? = null
 
-    private var _binding: FragmentFavoriteBinding? = null
+    private var _binding: FragmentPopularBinding? = null
     private val binding get() = _binding!!
 
     private lateinit var dataJsonRepository: DataJsonRepository
-    private lateinit var selectAllCurrencyUseCase: SelectAllCurrencyUseCase
-    private lateinit var myAdapterRecycler: MyAdapterRecyclerFavorite
+    private lateinit var myAdapterRecycler: MyAdapterRecyclerPopular
+    private lateinit var viewModelPopular: ViewModelPopular
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         arguments?.let {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
@@ -42,7 +41,8 @@ class FavoriteFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentFavoriteBinding.inflate(inflater, container, false)
+        _binding = FragmentPopularBinding.inflate(inflater, container, false)
+
 
         return binding.root
     }
@@ -50,19 +50,24 @@ class FavoriteFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        myAdapterRecycler = MyAdapterRecyclerFavorite(requireContext())
-
+        myAdapterRecycler = MyAdapterRecyclerPopular(requireContext())
         dataJsonRepository = DataJsonRepository(requireContext())
-        selectAllCurrencyUseCase = SelectAllCurrencyUseCaseImpl(dataJsonRepository)
 
-        binding.listFavorite.adapter = myAdapterRecycler
-        binding.listFavorite.layoutManager = LinearLayoutManager(context)
+        binding.listPopular.adapter = myAdapterRecycler
+        binding.listPopular.layoutManager = LinearLayoutManager(context)
+
+        viewModelPopular =
+            ViewModelProvider(
+                requireActivity(),
+                MyViewModelFactory(dataJsonRepository)
+            )[ViewModelPopular::class.java]
+
+        viewModelPopular.getCurrencyLiveData.observe(viewLifecycleOwner) {
+            myAdapterRecycler.addList(it)
+        }
 
         viewLifecycleOwner.lifecycleScope.launch {
-
-            val listData = selectAllCurrencyUseCase.selectAll()
-            myAdapterRecycler.addList(listData)
-
+            viewModelPopular.getCurrencyData()
         }
 
     }
@@ -71,7 +76,7 @@ class FavoriteFragment : Fragment() {
 
         @JvmStatic
         fun newInstance(param1: String, param2: String) =
-            FavoriteFragment().apply {
+            PopularFragment().apply {
                 arguments = Bundle().apply {
                     putString(ARG_PARAM1, param1)
                     putString(ARG_PARAM2, param2)

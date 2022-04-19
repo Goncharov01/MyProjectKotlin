@@ -11,11 +11,11 @@ import com.myproject.app.databinding.SingleItemBinding
 import com.myproject.app.data.db.DataCurrency
 import com.myproject.app.domain.usecase.deleteCurrency.DeleteCurrencyUseCase
 import com.myproject.app.domain.usecase.deleteCurrency.DeleteCurrencyUseCaseImpl
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
-class MyAdapterRecyclerFavorite(var context: Context) :
+class MyAdapterRecyclerFavorite(context: Context) :
     RecyclerView.Adapter<MyViewHolderFavorite>() {
 
     private var listCurrency = mutableListOf<DataCurrency>()
@@ -37,7 +37,7 @@ class MyAdapterRecyclerFavorite(var context: Context) :
 
         holder.binding.iconFavorite.setOnClickListener {
 
-            GlobalScope.launch(Dispatchers.Main) {
+            CoroutineScope(Dispatchers.Main).launch {
                 deleteCurrencyUseCase.deleteCurrency(dataCurrency.id)
                 listCurrency.remove(dataCurrency)
                 notifyItemRemoved(position)

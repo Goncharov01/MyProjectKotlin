@@ -8,15 +8,13 @@ import com.myproject.app.R
 import com.myproject.app.data.DataJsonRepository
 import com.myproject.app.databinding.SingleItemBinding
 import com.myproject.app.data.db.DataCurrency
-import com.myproject.app.domain.usecase.deleteCurrency.DeleteCurrencyUseCase
-import com.myproject.app.domain.usecase.deleteCurrency.DeleteCurrencyUseCaseImpl
 import com.myproject.app.domain.usecase.deletecurrencybycurrency.DeleteCurrencyByCurrencyUseCase
 import com.myproject.app.domain.usecase.deletecurrencybycurrency.DeleteCurrencyByCurrencyUseCaseImpl
 import com.myproject.app.domain.usecase.insertcurrency.InsertCurrencyUseCase
 import com.myproject.app.domain.usecase.insertcurrency.InsertCurrencyUseCaseImpl
 import kotlinx.coroutines.*
 
-class MyAdapterRecyclerPopular(var context: Context) :
+class MyAdapterRecyclerPopular(context: Context) :
     RecyclerView.Adapter<DataCurrencyViewHolder>() {
 
     private var listCurrency = mutableListOf<DataCurrency>()
@@ -42,7 +40,7 @@ class MyAdapterRecyclerPopular(var context: Context) :
 
             if (dataCurrency.id == 0) {
 
-                GlobalScope.launch(Dispatchers.Main) {
+                CoroutineScope(Dispatchers.Main).launch {
                     if (holder.binding.iconFavorite.drawable.constantState
                         != holder.binding.root.resources.getDrawable(R.drawable.favorite_icon).constantState
                     ) {
