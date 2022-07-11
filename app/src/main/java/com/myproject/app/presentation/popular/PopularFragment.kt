@@ -25,6 +25,9 @@ class PopularFragment : Fragment() {
     private var _binding: FragmentPopularBinding? = null
     private val binding get() = _binding!!
 
+    // Лучше не использовать lateinit. Есть альтернатива - by lazy { }
+    // Первые две переменные используются только внутри onViewCreated(), поэтому их можно инициализировать прямо там
+
     private lateinit var dataJsonRepository: DataJsonRepository
     private lateinit var myAdapterRecycler: MyAdapterRecyclerPopular
     private lateinit var viewModelPopular: ViewModelPopular

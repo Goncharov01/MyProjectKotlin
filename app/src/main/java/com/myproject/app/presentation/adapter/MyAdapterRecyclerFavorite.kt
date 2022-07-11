@@ -15,6 +15,19 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
+/**
+ *
+ *  Нужно вынести работу с юзкейсами и потоками во вьюмодель, потому что задача адаптера - просто связать список данных с
+ *  вьюшками. Как вынести? Передавать в параметры адаптера клик листенер, а сам листенер написать во фрагменте.
+ *  Он в свою очередь будет обращаться ко вьюмодели, которая будет вызывать viewModelScope и внутри него юзкейсы
+ *  ViewModelScope потому что он создан специально для вьюмодели, в отличие от CoroutineScope
+ *
+ *  В самом адаптере мы просто берем DataCurrency текущий и проверяем его поле фейворит.
+ *  Если оно true, ставим одну картинку, если false - другую
+ *
+ *  п.с. почитай про ListAdapter
+**/
+
 class MyAdapterRecyclerFavorite(context: Context) :
     RecyclerView.Adapter<MyViewHolderFavorite>() {
 

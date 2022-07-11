@@ -17,6 +17,13 @@ import kotlinx.coroutines.*
 class MyAdapterRecyclerPopular(context: Context) :
     RecyclerView.Adapter<DataCurrencyViewHolder>() {
 
+    /**
+     * Конкретно тут фейвориты не будут стабильно отображаться потому что ты по клику меняешь ресурс, но если мы перезайдем
+     * на этот фрагмент то данные снова поднянутся из сети и у них не будут выставлены нужные нам фейвориты
+     *
+     * Поэтому кэшируем все в БД.
+     */
+
     private var listCurrency = mutableListOf<DataCurrency>()
     private val dataJsonRepository: DataJsonRepository = DataJsonRepository(context)
     private val insertCurrencyUseCase: InsertCurrencyUseCase =
