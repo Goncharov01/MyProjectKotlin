@@ -14,6 +14,9 @@ interface DataCurrencyDao {
     @Query("select * from DataCurrency")
     suspend fun selectAll(): List<DataCurrency>
 
+    @Query("select * from DataCurrency where currency = :currency")
+    suspend fun selectCurrencyByCurrency(currency: String): DataCurrency
+
     @Query("delete from DataCurrency where id = :id")
     suspend fun deleteCurrency(id: Int): Int
 

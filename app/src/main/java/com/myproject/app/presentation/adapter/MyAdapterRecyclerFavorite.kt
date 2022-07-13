@@ -42,6 +42,7 @@ class MyAdapterRecyclerFavorite(context: Context) :
                 listCurrency.remove(dataCurrency)
                 notifyItemRemoved(position)
                 notifyItemRangeChanged(position, itemCount)
+                dataCurrency.favorite = false
             }
 
             notifyItemChanged(position)

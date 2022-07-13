@@ -22,6 +22,10 @@ data class DataJsonRepository(var context: Context) {
         return dataCurrency.selectAll()
     }
 
+    suspend fun selectCurrencyByCurrency(currency: String): DataCurrency {
+        return dataCurrency.selectCurrencyByCurrency(currency)
+    }
+
     suspend fun deleteCurrency(id: Int): Int {
         return dataCurrency.deleteCurrency(id)
     }
