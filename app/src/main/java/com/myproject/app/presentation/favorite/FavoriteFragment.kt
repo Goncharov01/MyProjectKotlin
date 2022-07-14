@@ -25,9 +25,18 @@ class FavoriteFragment : Fragment() {
     private var _binding: FragmentFavoriteBinding? = null
     private val binding get() = _binding!!
 
-    private lateinit var dataJsonRepository: DataJsonRepository
-    private lateinit var myAdapterRecycler: MyAdapterRecyclerFavorite
-    private lateinit var viewModelFavorite: ViewModelFavorite
+    private val dataJsonRepository: DataJsonRepository by lazy { DataJsonRepository(requireContext()) }
+    private val myAdapterRecycler: MyAdapterRecyclerFavorite by lazy {
+        MyAdapterRecyclerFavorite(
+            requireContext(),
+        )
+    }
+    private val viewModelFavorite: ViewModelFavorite by lazy {
+        ViewModelProvider(
+            requireActivity(),
+            MyViewModelFactory(dataJsonRepository)
+        )[ViewModelFavorite::class.java]
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,17 +59,8 @@ class FavoriteFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        myAdapterRecycler = MyAdapterRecyclerFavorite(requireContext())
-        dataJsonRepository = DataJsonRepository(requireContext())
-
         binding.listFavorite.adapter = myAdapterRecycler
         binding.listFavorite.layoutManager = LinearLayoutManager(requireContext())
-
-        viewModelFavorite =
-            ViewModelProvider(
-                requireActivity(),
-                MyViewModelFactory(dataJsonRepository)
-            )[ViewModelFavorite::class.java]
 
         viewModelFavorite.selectAllLiveData.observe(viewLifecycleOwner) {
             myAdapterRecycler.addList(it)

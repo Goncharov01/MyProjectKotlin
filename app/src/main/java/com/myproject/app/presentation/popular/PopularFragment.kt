@@ -25,9 +25,18 @@ class PopularFragment : Fragment() {
     private var _binding: FragmentPopularBinding? = null
     private val binding get() = _binding!!
 
-    private lateinit var dataJsonRepository: DataJsonRepository
-    private lateinit var myAdapterRecycler: MyAdapterRecyclerPopular
-    private lateinit var viewModelPopular: ViewModelPopular
+    private val dataJsonRepository: DataJsonRepository by lazy { DataJsonRepository(requireContext()) }
+    private val myAdapterRecycler: MyAdapterRecyclerPopular by lazy {
+        MyAdapterRecyclerPopular(
+            requireContext()
+        )
+    }
+    private val viewModelPopular: ViewModelPopular by lazy {
+        ViewModelProvider(
+            requireActivity(),
+            MyViewModelFactory(dataJsonRepository)
+        )[ViewModelPopular::class.java]
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,17 +59,8 @@ class PopularFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        myAdapterRecycler = MyAdapterRecyclerPopular(requireContext())
-        dataJsonRepository = DataJsonRepository(requireContext())
-
         binding.listPopular.adapter = myAdapterRecycler
         binding.listPopular.layoutManager = LinearLayoutManager(context)
-
-        viewModelPopular =
-            ViewModelProvider(
-                requireActivity(),
-                MyViewModelFactory(dataJsonRepository)
-            )[ViewModelPopular::class.java]
 
         viewModelPopular.getCurrencyLiveData.observe(viewLifecycleOwner) {
             myAdapterRecycler.addList(it)
