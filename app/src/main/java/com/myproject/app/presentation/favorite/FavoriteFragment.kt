@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.myproject.app.data.DataJsonRepository
+import com.myproject.app.data.db.DataCurrency
 import com.myproject.app.databinding.FragmentFavoriteBinding
 import com.myproject.app.presentation.adapter.MyAdapterRecyclerFavorite
 import com.myproject.app.presentation.adapter.MyViewModelFactory
@@ -27,9 +28,11 @@ class FavoriteFragment : Fragment() {
 
     private val dataJsonRepository: DataJsonRepository by lazy { DataJsonRepository(requireContext()) }
     private val myAdapterRecycler: MyAdapterRecyclerFavorite by lazy {
-        MyAdapterRecyclerFavorite(
-            requireContext(),
-        )
+        MyAdapterRecyclerFavorite { DataCurrency ->
+            clickListenerForAdapter(
+                DataCurrency
+            )
+        }
     }
     private val viewModelFavorite: ViewModelFavorite by lazy {
         ViewModelProvider(
@@ -68,6 +71,14 @@ class FavoriteFragment : Fragment() {
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewModelFavorite.selectAllCurrencyDatabase()
+        }
+
+    }
+
+    private fun clickListenerForAdapter(dataCurrency: DataCurrency) {
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModelFavorite.deleteFavoriteCurrency(dataCurrency.id)
         }
 
     }

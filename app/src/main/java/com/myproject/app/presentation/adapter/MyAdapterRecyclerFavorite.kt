@@ -1,27 +1,18 @@
 package com.myproject.app.presentation.adapter
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.myproject.app.R
-import com.myproject.app.data.DataJsonRepository
 import com.myproject.app.databinding.SingleItemBinding
 import com.myproject.app.data.db.DataCurrency
-import com.myproject.app.domain.usecase.deleteCurrency.DeleteCurrencyUseCase
-import com.myproject.app.domain.usecase.deleteCurrency.DeleteCurrencyUseCaseImpl
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 
-class MyAdapterRecyclerFavorite(context: Context) :
-    RecyclerView.Adapter<MyViewHolderFavorite>() {
+class MyAdapterRecyclerFavorite(
+    private val clickListener: (DataCurrency) -> Unit
+) : RecyclerView.Adapter<MyViewHolderFavorite>() {
 
     private var listCurrency = mutableListOf<DataCurrency>()
-    private val dataJsonRepository: DataJsonRepository = DataJsonRepository(context)
-    private val deleteCurrencyUseCase: DeleteCurrencyUseCase =
-        DeleteCurrencyUseCaseImpl(dataJsonRepository)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolderFavorite {
         val binding: SingleItemBinding =
@@ -36,19 +27,11 @@ class MyAdapterRecyclerFavorite(context: Context) :
         holder.binding.iconFavorite.setImageResource(R.drawable.favorite_icon)
 
         holder.binding.iconFavorite.setOnClickListener {
-
-            CoroutineScope(Dispatchers.Main).launch {
-                deleteCurrencyUseCase.deleteCurrency(dataCurrency.id)
-                listCurrency.remove(dataCurrency)
-                notifyItemRemoved(position)
-                notifyItemRangeChanged(position, itemCount)
-                dataCurrency.favorite = false
-            }
-
-            notifyItemChanged(position)
-
+            clickListener(dataCurrency)
+            listCurrency.removeAt(position)
+            notifyItemRemoved(position)
+            notifyItemRangeChanged(position, listCurrency.size)
         }
-
     }
 
     override fun getItemCount(): Int {
@@ -64,5 +47,6 @@ class MyAdapterRecyclerFavorite(context: Context) :
 
 }
 
-class MyViewHolderFavorite(var binding: SingleItemBinding) :
-    RecyclerView.ViewHolder(binding.root)
+class MyViewHolderFavorite(
+    var binding: SingleItemBinding,
+) : RecyclerView.ViewHolder(binding.root)
