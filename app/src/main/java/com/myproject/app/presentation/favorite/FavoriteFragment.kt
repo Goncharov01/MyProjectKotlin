@@ -15,13 +15,7 @@ import com.myproject.app.presentation.adapter.MyAdapterRecyclerFavorite
 import com.myproject.app.presentation.adapter.MyViewModelFactory
 import kotlinx.coroutines.launch
 
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
 class FavoriteFragment : Fragment() {
-
-    private var param1: String? = null
-    private var param2: String? = null
 
     private var _binding: FragmentFavoriteBinding? = null
     private val binding get() = _binding!!
@@ -39,15 +33,6 @@ class FavoriteFragment : Fragment() {
             requireActivity(),
             MyViewModelFactory(dataJsonRepository)
         )[ViewModelFavorite::class.java]
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
     }
 
     override fun onCreateView(
@@ -81,17 +66,5 @@ class FavoriteFragment : Fragment() {
             viewModelFavorite.deleteFavoriteCurrency(dataCurrency.id)
         }
 
-    }
-
-    companion object {
-
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            FavoriteFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
     }
 }
