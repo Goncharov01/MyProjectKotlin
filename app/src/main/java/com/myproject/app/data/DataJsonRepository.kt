@@ -32,6 +32,10 @@ data class DataJsonRepository(var context: Context) {
         }
     }
 
+    suspend fun selectFavoriteCurrency(): List<DataCurrency> {
+        return dataBaseCurrency.selectFavoriteCurrency()
+    }
+
     suspend fun insertCurrency(listCurrency: DataCurrency): Long {
         return dataBaseCurrency.insertCurrency(listCurrency)
     }
