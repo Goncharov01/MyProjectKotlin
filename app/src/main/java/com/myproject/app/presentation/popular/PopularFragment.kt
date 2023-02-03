@@ -14,7 +14,6 @@ import com.myproject.app.data.db.DataCurrency
 import com.myproject.app.databinding.FragmentPopularBinding
 import com.myproject.app.presentation.adapter.MyAdapterRecyclerPopular
 import com.myproject.app.presentation.adapter.MyViewModelFactory
-import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 
 class PopularFragment : Fragment() {
@@ -24,10 +23,7 @@ class PopularFragment : Fragment() {
 
     private val dataJsonRepository: DataJsonRepository by lazy { DataJsonRepository(requireContext()) }
     private val myAdapterRecycler: MyAdapterRecyclerPopular by lazy {
-        MyAdapterRecyclerPopular(
-            { clickListener -> clickListenerForAdapter(clickListener) },
-            { checkFavoriteCurrency -> checkFavoriteCurrency(checkFavoriteCurrency) }
-        )
+        MyAdapterRecyclerPopular { clickListener -> clickListenerForAdapter(clickListener) }
     }
     private val viewModelPopular: ViewModelPopular by lazy {
         ViewModelProvider(
@@ -83,14 +79,4 @@ class PopularFragment : Fragment() {
 
     }
 
-    private suspend fun checkFavoriteCurrency(currency: String): DataCurrency {
-
-        val dataCurrency = viewLifecycleOwner.lifecycleScope.async {
-
-            viewModelPopular.selectCurrencyInDataBase(currency)
-
-        }.await()
-
-        return dataCurrency
-    }
 }

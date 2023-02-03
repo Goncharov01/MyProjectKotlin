@@ -11,7 +11,6 @@ import com.myproject.app.domain.usecase.getcurrency.GetCurrencyUseCase
 import com.myproject.app.domain.usecase.getcurrency.GetCurrencyUseCaseImpl
 import com.myproject.app.domain.usecase.insertcurrency.InsertCurrencyUseCase
 import com.myproject.app.domain.usecase.insertcurrency.InsertCurrencyUseCaseImpl
-import com.myproject.app.domain.usecase.selectbycurrency.SelectCurrencyByCurrencyUseCaseImpl
 import kotlinx.coroutines.*
 
 class ViewModelPopular(var dataJsonRepository: DataJsonRepository) : ViewModel() {
@@ -19,8 +18,6 @@ class ViewModelPopular(var dataJsonRepository: DataJsonRepository) : ViewModel()
     private val getCurrencyUseCase: GetCurrencyUseCase = GetCurrencyUseCaseImpl(dataJsonRepository)
     private val insertCurrencyUseCase: InsertCurrencyUseCase =
         InsertCurrencyUseCaseImpl(dataJsonRepository)
-    private val selectCurrencyByCurrencyUseCase: SelectCurrencyByCurrencyUseCaseImpl =
-        SelectCurrencyByCurrencyUseCaseImpl(dataJsonRepository)
     private val deleteCurrencyByCurrencyUseCase: DeleteCurrencyByCurrencyUseCase =
         DeleteCurrencyByCurrencyUseCaseImpl(dataJsonRepository)
 
@@ -51,17 +48,6 @@ class ViewModelPopular(var dataJsonRepository: DataJsonRepository) : ViewModel()
 
         }
 
-    }
-
-    suspend fun selectCurrencyInDataBase(currency: String): DataCurrency {
-
-        val dataCurrency = viewModelScope.async(Dispatchers.IO) {
-
-            selectCurrencyByCurrencyUseCase.selectCurrencyByCurrency(currency)
-
-        }.await()
-
-        return dataCurrency
     }
 
 }
