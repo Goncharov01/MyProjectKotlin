@@ -16,7 +16,6 @@ import kotlinx.coroutines.*
 
 class ViewModelPopular(var dataJsonRepository: DataJsonRepository) : ViewModel() {
 
-    private val listDataCurrency = mutableListOf<DataCurrency>()
     private val getCurrencyUseCase: GetCurrencyUseCase = GetCurrencyUseCaseImpl(dataJsonRepository)
     private val insertCurrencyUseCase: InsertCurrencyUseCase =
         InsertCurrencyUseCaseImpl(dataJsonRepository)
@@ -29,22 +28,8 @@ class ViewModelPopular(var dataJsonRepository: DataJsonRepository) : ViewModel()
 
     suspend fun getCurrencyData() {
 
-        CoroutineScope(Dispatchers.IO).launch {
-
-            val dataCurrency = getCurrencyUseCase.getCurrency().rates
-
-            for (entry in dataCurrency) {
-                listDataCurrency.add(
-                    DataCurrency(
-                        currency = entry.key,
-                        value = entry.value.toString()
-                    )
-                )
-            }
-
-            getCurrencyLiveData.postValue(listDataCurrency)
-
-        }
+        val getCurrencyFromDataBaseOrNetwork = getCurrencyUseCase.getCurrency()
+        getCurrencyLiveData.postValue(getCurrencyFromDataBaseOrNetwork)
 
     }
 
