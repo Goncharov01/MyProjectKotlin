@@ -9,10 +9,19 @@ import androidx.room.Query
 interface DataCurrencyDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertAllCurrency(listCurrency: List<DataCurrency>): LongArray
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertCurrency(listCurrency: DataCurrency): Long
 
     @Query("select * from DataCurrency")
     suspend fun selectAll(): List<DataCurrency>
+
+    @Query("select * from DataCurrency where favorite=true")
+    suspend fun selectFavoriteCurrency(): List<DataCurrency>
+
+    @Query("select count(*) from DataCurrency")
+    suspend fun getCountCurrency(): Int
 
     @Query("select * from DataCurrency where currency = :currency")
     suspend fun selectCurrencyByCurrency(currency: String): DataCurrency

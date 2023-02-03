@@ -4,34 +4,56 @@ import android.content.Context
 import com.myproject.app.data.db.DataBaseBuilder
 import com.myproject.app.data.db.DataCurrency
 import com.myproject.app.data.network.CurrencyApi
-import com.myproject.app.domain.DataJson
 
 data class DataJsonRepository(var context: Context) {
 
-    private val dataCurrency = DataBaseBuilder.getInstans(context).dataCurrencyDao()
+    private val dataBaseCurrency = DataBaseBuilder.getInstans(context).dataCurrencyDao()
 
-    suspend fun getCurrency(): DataJson {
-        return CurrencyApi.getApi().getCurrency()
+    suspend fun getCurrency(): List<DataCurrency> {
+        val countCurrency = dataBaseCurrency.getCountCurrency()
+
+        if (countCurrency > 0)
+            return dataBaseCurrency.selectAll()
+        else {
+            val listDataCurrency = mutableListOf<DataCurrency>()
+            val dataCurrency = CurrencyApi.getApi().getCurrency()
+
+            for (entry in dataCurrency.rates) {
+                listDataCurrency.add(
+                    DataCurrency(
+                        currency = entry.key,
+                        value = entry.value.toString()
+                    )
+                )
+            }
+            dataBaseCurrency.insertAllCurrency(listDataCurrency)
+
+            return listDataCurrency
+        }
+    }
+
+    suspend fun selectFavoriteCurrency(): List<DataCurrency> {
+        return dataBaseCurrency.selectFavoriteCurrency()
     }
 
     suspend fun insertCurrency(listCurrency: DataCurrency): Long {
-        return dataCurrency.insertCurrency(listCurrency)
+        return dataBaseCurrency.insertCurrency(listCurrency)
     }
 
     suspend fun selectAll(): List<DataCurrency> {
-        return dataCurrency.selectAll()
+        return dataBaseCurrency.selectAll()
     }
 
     suspend fun selectCurrencyByCurrency(currency: String): DataCurrency {
-        return dataCurrency.selectCurrencyByCurrency(currency)
+        return dataBaseCurrency.selectCurrencyByCurrency(currency)
     }
 
     suspend fun deleteCurrency(id: Int): Int {
-        return dataCurrency.deleteCurrency(id)
+        return dataBaseCurrency.deleteCurrency(id)
     }
 
     suspend fun deleteCurrencyByCurrency(currency: String): Int {
-        return dataCurrency.deleteCurrencyByCurrency(currency)
+        return dataBaseCurrency.deleteCurrencyByCurrency(currency)
     }
 
 }
