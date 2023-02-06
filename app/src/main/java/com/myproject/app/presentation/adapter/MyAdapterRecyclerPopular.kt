@@ -2,6 +2,7 @@ package com.myproject.app.presentation.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.myproject.app.R
 import com.myproject.app.databinding.SingleItemBinding
@@ -11,7 +12,7 @@ class MyAdapterRecyclerPopular(
     private val clickListener: (DataCurrency) -> Unit,
 ) : RecyclerView.Adapter<DataCurrencyViewHolder>() {
 
-    private var listCurrency = mutableListOf<DataCurrency>()
+    private var listCurrency: List<DataCurrency> = mutableListOf()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DataCurrencyViewHolder {
         val binding: SingleItemBinding =
@@ -37,10 +38,12 @@ class MyAdapterRecyclerPopular(
         }
     }
 
-    fun addList(listCurrency: List<DataCurrency>) {
-        this.listCurrency.clear()
-        this.listCurrency.addAll(listCurrency)
-        notifyDataSetChanged()
+    fun addList(newListCurrency: List<DataCurrency>) {
+        val diffCallBackList = CurrencyDiffUtil(listCurrency, newListCurrency)
+        val diffResult = DiffUtil.calculateDiff(diffCallBackList)
+
+        diffResult.dispatchUpdatesTo(this)
+        listCurrency = newListCurrency
     }
 
     override fun getItemCount(): Int {
