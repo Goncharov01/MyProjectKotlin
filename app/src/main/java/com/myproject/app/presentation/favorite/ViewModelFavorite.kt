@@ -1,6 +1,5 @@
 package com.myproject.app.presentation.favorite
 
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.myproject.app.data.DataJsonRepository
@@ -9,6 +8,7 @@ import com.myproject.app.domain.usecase.deleteCurrency.DeleteCurrencyUseCase
 import com.myproject.app.domain.usecase.deleteCurrency.DeleteCurrencyUseCaseImpl
 import com.myproject.app.domain.usecase.selecttfavoritecarrency.SelectFavoriteCurrencyUseCase
 import com.myproject.app.domain.usecase.selecttfavoritecarrency.SelectFavoriteCurrencyUseCaseImpl
+import com.myproject.app.presentation.util.SingleLiveEvent
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -20,13 +20,13 @@ class ViewModelFavorite(var dataJsonRepository: DataJsonRepository) : ViewModel(
     private val deleteCurrencyUseCase: DeleteCurrencyUseCase =
         DeleteCurrencyUseCaseImpl(dataJsonRepository)
 
-    val favoriteCurrency = MutableLiveData<MutableList<DataCurrency>>()
+    val getFavoriteCurrencyLiveData = SingleLiveEvent<MutableList<DataCurrency>>()
 
     suspend fun selectAllCurrencyDatabase() {
 
         viewModelScope.launch(Dispatchers.IO) {
 
-            favoriteCurrency.postValue(selectFavoriteCurrency.selectFavoriteCurrency())
+            getFavoriteCurrencyLiveData.postValue(selectFavoriteCurrency.selectFavoriteCurrency())
 
         }
 

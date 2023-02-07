@@ -1,6 +1,5 @@
 package com.myproject.app.presentation.popular
 
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.myproject.app.data.DataJsonRepository
@@ -11,6 +10,7 @@ import com.myproject.app.domain.usecase.getcurrency.GetCurrencyUseCase
 import com.myproject.app.domain.usecase.getcurrency.GetCurrencyUseCaseImpl
 import com.myproject.app.domain.usecase.insertcurrency.InsertCurrencyUseCase
 import com.myproject.app.domain.usecase.insertcurrency.InsertCurrencyUseCaseImpl
+import com.myproject.app.presentation.util.SingleLiveEvent
 import kotlinx.coroutines.*
 
 class ViewModelPopular(var dataJsonRepository: DataJsonRepository) : ViewModel() {
@@ -21,7 +21,7 @@ class ViewModelPopular(var dataJsonRepository: DataJsonRepository) : ViewModel()
     private val deleteCurrencyByCurrencyUseCase: DeleteCurrencyByCurrencyUseCase =
         DeleteCurrencyByCurrencyUseCaseImpl(dataJsonRepository)
 
-    val getCurrencyLiveData = MutableLiveData<List<DataCurrency>>()
+    val getCurrencyLiveData = SingleLiveEvent<List<DataCurrency>>()
 
     suspend fun getCurrencyData() {
 
