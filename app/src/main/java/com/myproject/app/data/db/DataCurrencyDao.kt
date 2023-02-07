@@ -18,7 +18,7 @@ interface DataCurrencyDao {
     suspend fun selectAll(): List<DataCurrency>
 
     @Query("select * from DataCurrency where favorite=true")
-    suspend fun selectFavoriteCurrency(): List<DataCurrency>
+    suspend fun selectFavoriteCurrency(): MutableList<DataCurrency>
 
     @Query("select count(*) from DataCurrency")
     suspend fun getCountCurrency(): Int

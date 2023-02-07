@@ -7,7 +7,7 @@ class SelectFavoriteCurrencyUseCaseImpl(val dataJsonRepository: DataJsonReposito
     : SelectFavoriteCurrencyUseCase
 {
 
-    override suspend fun selectFavoriteCurrency(): List<DataCurrency> {
+    override suspend fun selectFavoriteCurrency(): MutableList<DataCurrency> {
         return dataJsonRepository.selectFavoriteCurrency()
     }
 

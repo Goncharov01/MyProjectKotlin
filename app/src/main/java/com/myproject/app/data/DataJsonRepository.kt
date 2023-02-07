@@ -32,7 +32,7 @@ data class DataJsonRepository(var context: Context) {
         }
     }
 
-    suspend fun selectFavoriteCurrency(): List<DataCurrency> {
+    suspend fun selectFavoriteCurrency(): MutableList<DataCurrency> {
         return dataBaseCurrency.selectFavoriteCurrency()
     }
 
