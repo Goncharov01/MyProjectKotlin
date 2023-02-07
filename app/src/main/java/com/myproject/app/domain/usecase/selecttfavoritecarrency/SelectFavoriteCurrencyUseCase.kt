@@ -4,6 +4,6 @@ import com.myproject.app.data.db.DataCurrency
 
 interface SelectFavoriteCurrencyUseCase {
 
-    suspend fun selectFavoriteCurrency(): List<DataCurrency>
+    suspend fun selectFavoriteCurrency(): MutableList<DataCurrency>
 
 }

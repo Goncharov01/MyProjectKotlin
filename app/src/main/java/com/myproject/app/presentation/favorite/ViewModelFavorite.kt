@@ -20,7 +20,7 @@ class ViewModelFavorite(var dataJsonRepository: DataJsonRepository) : ViewModel(
     private val deleteCurrencyUseCase: DeleteCurrencyUseCase =
         DeleteCurrencyUseCaseImpl(dataJsonRepository)
 
-    val favoriteCurrency = MutableLiveData<List<DataCurrency>>()
+    val favoriteCurrency = MutableLiveData<MutableList<DataCurrency>>()
 
     suspend fun selectAllCurrencyDatabase() {
 

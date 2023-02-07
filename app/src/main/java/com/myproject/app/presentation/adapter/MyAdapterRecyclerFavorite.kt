@@ -1,8 +1,8 @@
 package com.myproject.app.presentation.adapter
 
-import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.myproject.app.R
 import com.myproject.app.databinding.SingleItemBinding
@@ -38,11 +38,12 @@ class MyAdapterRecyclerFavorite(
         return listCurrency.size
     }
 
-    @SuppressLint("NotifyDataSetChanged")
-    fun addList(listCurrency: List<DataCurrency>) {
-        this.listCurrency.clear()
-        this.listCurrency.addAll(listCurrency)
-        notifyDataSetChanged()
+    fun addList(newListCurrency: MutableList<DataCurrency>) {
+        val diffUtilCallBack = CurrencyDiffUtil(listCurrency, newListCurrency)
+        val diffResult = DiffUtil.calculateDiff(diffUtilCallBack)
+
+        diffResult.dispatchUpdatesTo(this)
+        listCurrency = newListCurrency
     }
 
 }
