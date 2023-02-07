@@ -50,7 +50,7 @@ class FavoriteFragment : Fragment() {
         binding.listFavorite.adapter = myAdapterRecycler
         binding.listFavorite.layoutManager = LinearLayoutManager(requireContext())
 
-        viewModelFavorite.favoriteCurrency.observe(viewLifecycleOwner) {
+        viewModelFavorite.getFavoriteCurrencyLiveData.observe(viewLifecycleOwner) {
             myAdapterRecycler.addList(it)
         }
 
