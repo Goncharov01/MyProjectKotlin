@@ -14,6 +14,7 @@ import com.myproject.app.data.db.DataCurrency
 import com.myproject.app.databinding.FragmentPopularBinding
 import com.myproject.app.presentation.adapter.MyAdapterRecyclerPopular
 import com.myproject.app.presentation.adapter.MyViewModelFactory
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 class PopularFragment : Fragment() {
@@ -47,14 +48,11 @@ class PopularFragment : Fragment() {
         binding.listPopular.adapter = myAdapterRecycler
         binding.listPopular.layoutManager = LinearLayoutManager(context)
 
-        viewModelPopular.getCurrencyLiveData.observe(viewLifecycleOwner) {
-            myAdapterRecycler.addList(it)
+        lifecycleScope.launchWhenCreated {
+            viewModelPopular.currencyGetList.collect {
+                myAdapterRecycler.submitData(it)
+            }
         }
-
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewModelPopular.getCurrencyData()
-        }
-
     }
 
     private fun clickListenerForAdapter(dataCurrency: DataCurrency) {

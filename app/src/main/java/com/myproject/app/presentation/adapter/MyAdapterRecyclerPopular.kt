@@ -2,6 +2,7 @@ package com.myproject.app.presentation.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.myproject.app.R
@@ -10,9 +11,7 @@ import com.myproject.app.data.db.DataCurrency
 
 class MyAdapterRecyclerPopular(
     private val clickListener: (DataCurrency) -> Unit,
-) : RecyclerView.Adapter<DataCurrencyViewHolder>() {
-
-    private var listCurrency: List<DataCurrency> = mutableListOf()
+) : PagingDataAdapter<DataCurrency,DataCurrencyViewHolder>(CallBackDiffUtil) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DataCurrencyViewHolder {
         val binding: SingleItemBinding =
@@ -22,7 +21,7 @@ class MyAdapterRecyclerPopular(
     }
 
     override fun onBindViewHolder(holder: DataCurrencyViewHolder, position: Int) {
-        val dataCurrency = listCurrency[position]
+        val dataCurrency = getItem(position)!!
         holder.binding.textCurrency.text = dataCurrency.currency
         holder.binding.textValue.text = dataCurrency.value
 
@@ -38,18 +37,16 @@ class MyAdapterRecyclerPopular(
         }
     }
 
-    fun addList(newListCurrency: List<DataCurrency>) {
-        val diffCallBackList = CurrencyDiffUtil(listCurrency, newListCurrency)
-        val diffResult = DiffUtil.calculateDiff(diffCallBackList)
+    private object CallBackDiffUtil : DiffUtil.ItemCallback<DataCurrency>() {
 
-        diffResult.dispatchUpdatesTo(this)
-        listCurrency = newListCurrency
+        override fun areItemsTheSame(oldItem: DataCurrency, newItem: DataCurrency): Boolean {
+            return oldItem == newItem
+        }
+
+        override fun areContentsTheSame(oldItem: DataCurrency, newItem: DataCurrency): Boolean {
+            return oldItem.currency == newItem.currency && oldItem.favorite == newItem.favorite
+        }
     }
-
-    override fun getItemCount(): Int {
-        return listCurrency.size
-    }
-
 }
 
 class DataCurrencyViewHolder(var binding: SingleItemBinding) :
