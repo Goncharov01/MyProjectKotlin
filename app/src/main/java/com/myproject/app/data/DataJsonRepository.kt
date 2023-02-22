@@ -9,6 +9,9 @@ data class DataJsonRepository(var context: Context) {
 
     private val dataBaseCurrency = DataBaseBuilder.getInstans(context).dataCurrencyDao()
 
+    suspend fun getCurrencyPage(page: Int) =
+        CurrencyApi.getApi().getCurrencyPage(page)
+
     suspend fun getCurrency(): List<DataCurrency> {
         val countCurrency = dataBaseCurrency.getCountCurrency()
 

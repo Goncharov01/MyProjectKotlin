@@ -2,6 +2,10 @@ package com.myproject.app.presentation.popular
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.cachedIn
+import com.myproject.app.data.CurrencyPagingSource
 import com.myproject.app.data.DataJsonRepository
 import com.myproject.app.data.db.DataCurrency
 import com.myproject.app.domain.usecase.deletecurrencybycurrency.DeleteCurrencyByCurrencyUseCase
@@ -21,7 +25,11 @@ class ViewModelPopular(var dataJsonRepository: DataJsonRepository) : ViewModel()
     private val deleteCurrencyByCurrencyUseCase: DeleteCurrencyByCurrencyUseCase =
         DeleteCurrencyByCurrencyUseCaseImpl(dataJsonRepository)
 
-    val getCurrencyLiveData = SingleLiveEvent<List<DataCurrency>>()
+    private val getCurrencyLiveData = SingleLiveEvent<List<DataCurrency>>()
+
+    val currencyGetList = Pager(PagingConfig(5)) {
+        CurrencyPagingSource(dataJsonRepository)
+    }.flow.cachedIn(viewModelScope)
 
     suspend fun getCurrencyData() {
 
